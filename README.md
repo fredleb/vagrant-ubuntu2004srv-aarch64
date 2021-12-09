@@ -45,11 +45,11 @@ I prepare my own Vagrantfile (see below) and metdata.json.
 
 Then I pack them together in a box file:
 ```
-tar cvzf custom_box.box ./metadata.json ./Vagrantfile ./box.img 
+tar cvzf ubuntu20.04-aarch64.box ./metadata.json ./info.json ./Vagrantfile ./box.img
 ```
 or faster:
 ```
-tar cv -S --totals ./metadata.json ./Vagrantfile ./box.img | pigz -c > ubuntu20.04-aarch64.box
+tar cv -S --totals ./metadata.json ./info.json ./Vagrantfile ./box.img | pigz -c > ubuntu20.04-aarch64.box
 ```
 
 And added the box to my local vagrant:

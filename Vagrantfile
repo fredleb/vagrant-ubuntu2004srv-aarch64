@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
   # Set proper platform
   config.vm.provider :libvirt do |libvirt|
     libvirt.driver = "qemu"
+    libvirt.storage_pool_name = "big_pool"
     libvirt.memory = 2048
     libvirt.cpus = 2
     libvirt.machine_type = "virt"

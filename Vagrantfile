@@ -29,8 +29,8 @@ Vagrant.configure("2") do |config|
     libvirt.cpu_model = "cortex-a72"
     libvirt.graphics_type = "none"
     libvirt.features = ['acpi',  'gic version=\'2\'']
-    libvirt.nvram = "./nvram.fd"
     libvirt.loader = "/usr/share/edk2-armvirt/aarch64/QEMU_CODE.fd"
+    libvirt.nvram = "/home/vm/nvram/nvram.fd"
     libvirt.usb_controller :model => "qemu-xhci" # USB3 standard model
     libvirt.input :type => "mouse", :bus => "usb"
   end

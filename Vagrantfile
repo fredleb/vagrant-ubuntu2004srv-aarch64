@@ -1,6 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# The base of the the hostname
+HOSTNAME_BASE = "rb"
+
+# The TLD domain the hosts belong to
+DOMAIN_NAME = "fritz.box"
+
+# The number of VMs managed by this script
+VM_COUNT = 4
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -66,6 +75,13 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Create several machines
+  (1..VM_COUNT).each do |i|
+    config.vm.define "#{HOSTNAME_BASE}#{i}" do |server|
+      server.vm.hostname = "#{HOSTNAME_BASE}#{i}.#{DOMAIN_NAME}"
+    end
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.

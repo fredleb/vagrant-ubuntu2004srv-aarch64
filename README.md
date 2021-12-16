@@ -28,7 +28,7 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 I then extracted the resulting virtual disk image to a local sparse file:
 ```
-qemu-img convert -O qcow2 /var/lib/libvirt/images/ubuntu20.04-aarch64.qcow2 ./box.img
+qemu-img convert -O qcow2 /home/vm/pool/ubuntu20.04-aarch64.qcow2 ./box.img
 ```
 
 ## Putting it all in a box
@@ -45,16 +45,16 @@ I prepare my own Vagrantfile (see below) and metdata.json.
 
 Then I pack them together in a box file:
 ```
-tar cvzf ubuntu20.04-aarch64.box ./metadata.json ./info.json ./Vagrantfile ./box.img
+tar cvzf ubuntu2004-server-aarch64.box ./metadata.json ./info.json ./Vagrantfile ./box.img
 ```
 or faster:
 ```
-tar cv -S --totals ./metadata.json ./info.json ./Vagrantfile ./box.img | pigz -c > ubuntu20.04-aarch64.box
+tar cv -S --totals ./metadata.json ./info.json ./Vagrantfile ./box.img | pigz -c > ubuntu2004-server-aarch64.box
 ```
 
 And added the box to my local vagrant:
 ```
-vagrant box add ubuntu20.04-aarch64.box --name ubuntu20.04-aarch64
+vagrant box add ubuntu2004-server-aarch64.box --name ubuntu2004-server-aarch64
 ```
 
 # Using the box

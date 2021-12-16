@@ -12,7 +12,8 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu20.04-aarch64"
+  #config.vm.box = "fredleb/ubuntu2004-server-aarch64"
+  config.vm.box = "ubuntu2004-server-aarch64"
 
   # Use libvirt as provider
   config.vm.provider "libvirt"

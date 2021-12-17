@@ -34,7 +34,9 @@ The solution is to __empty__ "/etc/machine-id" (don't delete it !).
 
 ## Extracting the disk image
 
-I then extracted the resulting virtual disk image to a local sparse file:
+I have not exactly find it how or where but it seems libvirt uses vagrant's box image as the base and adds an extra overly one to just have the deltas. Unfortunately that makes extracting the resulting image more complex.
+
+So I use virt-manager to first clone the vm and then extracted the resulting virtual disk image to a local sparse file:
 ```
 qemu-img convert -O qcow2 /home/vm/pool/ubuntu20.04-aarch64.qcow2 ./box.img
 ```
@@ -64,6 +66,8 @@ And added the box to my local vagrant:
 ```
 vagrant box add ubuntu2004-server-aarch64.box --name ubuntu2004-server-aarch64
 ```
+
+But I still need to manually delete the box image file from libvirt for some reason...
 
 # Using the box
 

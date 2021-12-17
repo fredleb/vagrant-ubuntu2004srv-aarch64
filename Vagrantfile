@@ -24,6 +24,10 @@ Vagrant.configure("2") do |config|
   #config.vm.box = "fredleb/ubuntu2004-server-aarch64"
   config.vm.box = "ubuntu2004-server-aarch64"
 
+  # ARM + Ubuntu on a x86_64 machine is not fast when trying to spwan loads of
+  # machines at once. So give it a bit more time than the default 5 min.
+  config.vm.boot_timeout = 600 # 10 mins
+
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.

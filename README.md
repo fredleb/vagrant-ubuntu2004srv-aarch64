@@ -24,6 +24,14 @@ Then rebuild the initramfs:
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
+## DHCP client-id
+
+I was having terrible problems getting more than one machine up because my VMs would get an IP address from dnsmasq using different MACs as expected but same client-id (DUID by default) because it is derived from the same starting host name (all machines start as "vagrant"). I thought about changing the ClientIdentifier to "mac" in the systemd file for the eth0 interface but that did not work neither.
+
+However I noticed this: https://salsa.debian.org/cloud-team/vagrant-boxes/blob/master/helpers/vagrant-setup#L103
+
+The solution is to __empty__ "/etc/machine-id" (don't delete it !).
+
 ## Extracting the disk image
 
 I then extracted the resulting virtual disk image to a local sparse file:

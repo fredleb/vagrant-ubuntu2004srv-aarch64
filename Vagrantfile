@@ -1,6 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# The base of the the hostname
+HOSTNAME_BASE = "node"
+
+# The TLD domain the hosts belong to
+DOMAIN_NAME = "private.lan"
+
+# The number of VMs managed by this script
+VM_COUNT = 4
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -12,27 +21,12 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu20.04-aarch64"
+  #config.vm.box = "fredleb/ubuntu2004-server-aarch64"
+  config.vm.box = "ubuntu2004-server-aarch64"
 
-  # Use libvirt as provider
-  config.vm.provider "libvirt"
-
-  # Set proper platform
-  config.vm.provider :libvirt do |libvirt|
-    libvirt.driver = "qemu"
-    libvirt.memory = 2048
-    libvirt.cpus = 2
-    libvirt.machine_type = "virt"
-    libvirt.machine_arch = "aarch64"
-    libvirt.cpu_mode = "custom"
-    libvirt.cpu_model = "cortex-a72"
-    libvirt.graphics_type = "none"
-    libvirt.features = ['acpi',  'gic version=\'2\'']
-    libvirt.nvram = "./nvram.fd"
-    libvirt.loader = "/usr/share/edk2-armvirt/aarch64/QEMU_CODE.fd"
-    libvirt.usb_controller :model => "qemu-xhci" # USB3 standard model
-    libvirt.input :type => "mouse", :bus => "usb"
-  end
+  # ARM + Ubuntu on a x86_64 machine is not fast when trying to spwan loads of
+  # machines at once. So give it a bit more time than the default 5 min.
+  config.vm.boot_timeout = 600 # 10 mins
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -64,6 +58,29 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Create several machines
+  (1..VM_COUNT).each do |i|
+    name = "#{HOSTNAME_BASE}#{i}"
+    config.vm.define "#{name}" do |server|
+      server.vm.hostname = "#{name}.#{DOMAIN_NAME}"
+
+      server.vm.provider :libvirt do |libvirt|
+        libvirt.driver = "qemu"
+        libvirt.storage_pool_name = "big_pool"
+        libvirt.memory = 2048
+        libvirt.cpus = 2
+        libvirt.machine_type = "virt"
+        libvirt.machine_arch = "aarch64"
+        libvirt.cpu_mode = "custom"
+        libvirt.cpu_model = "cortex-a72"
+        libvirt.graphics_type = "none"
+        libvirt.features = ['acpi',  'gic version=\'2\'']
+        libvirt.loader = "/usr/share/edk2-armvirt/aarch64/QEMU_CODE.fd"
+        libvirt.nvram = "/home/vm/nvram/nvram-#{name}.fd"
+      end
+    end
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.

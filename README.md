@@ -24,11 +24,21 @@ Then rebuild the initramfs:
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
+## DHCP client-id
+
+I was having terrible problems getting more than one machine up because my VMs would get an IP address from dnsmasq using different MACs as expected but same client-id (DUID by default) because it is derived from the same starting host name (all machines start as "vagrant"). I thought about changing the ClientIdentifier to "mac" in the systemd file for the eth0 interface but that did not work neither.
+
+However I noticed this: https://salsa.debian.org/cloud-team/vagrant-boxes/blob/master/helpers/vagrant-setup#L103
+
+The solution is to __empty__ "/etc/machine-id" (don't delete it !).
+
 ## Extracting the disk image
 
-I then extracted the resulting virtual disk image to a local sparse file:
+I have not exactly find it how or where but it seems libvirt uses vagrant's box image as the base and adds an extra overly one to just have the deltas. Unfortunately that makes extracting the resulting image more complex.
+
+So I use virt-manager to first clone the vm and then extracted the resulting virtual disk image to a local sparse file:
 ```
-qemu-img convert -O qcow2 /var/lib/libvirt/images/ubuntu20.04-aarch64.qcow2 ./box.img
+qemu-img convert -O qcow2 /home/vm/pool/ubuntu20.04-aarch64.qcow2 ./box.img
 ```
 
 ## Putting it all in a box
@@ -45,17 +55,19 @@ I prepare my own Vagrantfile (see below) and metdata.json.
 
 Then I pack them together in a box file:
 ```
-tar cvzf ubuntu20.04-aarch64.box ./metadata.json ./info.json ./Vagrantfile ./box.img
+tar cvzf ubuntu2004-server-aarch64.box ./metadata.json ./info.json ./Vagrantfile ./box.img
 ```
 or faster:
 ```
-tar cv -S --totals ./metadata.json ./info.json ./Vagrantfile ./box.img | pigz -c > ubuntu20.04-aarch64.box
+tar cv -S --totals ./metadata.json ./info.json ./Vagrantfile ./box.img | pigz -c > ubuntu2004-server-aarch64.box
 ```
 
 And added the box to my local vagrant:
 ```
-vagrant box add ubuntu20.04-aarch64.box --name ubuntu20.04-aarch64
+vagrant box add ubuntu2004-server-aarch64.box --name ubuntu2004-server-aarch64
 ```
+
+But I still need to manually delete the box image file from libvirt for some reason...
 
 # Using the box
 
